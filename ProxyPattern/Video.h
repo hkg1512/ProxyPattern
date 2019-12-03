@@ -64,10 +64,13 @@ public:
 	unsigned int GetDurationLeft();
 	unsigned int GetDuration();
 	IVideoState* GetState();
+	std::string GetCompletePath();
 
 	void SetName(std::string name);
 	void SetCompletePath(std::string path);
 	void SetState(IVideoState* videoState);
+	void ResetElapsedDuration();
+	void ResetDurationLeft();
 
 	inline std::string GetInfo() { return std::string("\n[\n\tId: " + m_id + " \n\tName: " + m_name + " \n\tFullPath: " + m_completePath + \
 		" \n\tResolution: " + m_resolution + " \n\tHD: " + std::to_string(m_isHD) + "\n\tDuration: " +std::to_string(m_duration))+"\n]\n\n\n"; }
@@ -81,7 +84,6 @@ private:
 
 private:
 	void Run();
-	void Control();
 
 public:
 	Video(VideoInfo* videoInfo);

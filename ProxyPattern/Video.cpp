@@ -22,7 +22,7 @@ void PlayState::ExecuteState(Video* videoRef)
 {
 	if (videoRef->GetVInfo() != NULL)
 	{
-		cout << "\n(Video is playing)-[ElapsedDuration: " + to_string(videoRef->GetVInfo()->GetElapsedDuration()) + " DurationLeft: " + to_string(videoRef->GetVInfo()->GetDurationLeft()) + "]\n";
+		cout << "\n(Video is playing)-@-[ElapsedDuration: " + to_string(videoRef->GetVInfo()->GetElapsedDuration()) + " DurationLeft: " + to_string(videoRef->GetVInfo()->GetDurationLeft()) + "]\n";
 		videoRef->GetVInfo()->ElapsedDuration();
 		videoRef->GetVInfo()->DurationLeft();
 
@@ -45,7 +45,7 @@ void PauseState::ExecuteState(Video* videoRef)
 	{
 		if (videoRef->GetVInfo()->GetState() != NULL)
 		{
-			cout << "\n(Video is paused)-[ElapsedDuration: " + to_string(videoRef->GetVInfo()->GetElapsedDuration()) + " DurationLeft: " + to_string(videoRef->GetVInfo()->GetDurationLeft()) + "]\n";
+			cout << "\n(Video is paused)-@-[ElapsedDuration: " + to_string(videoRef->GetVInfo()->GetElapsedDuration()) + " DurationLeft: " + to_string(videoRef->GetVInfo()->GetDurationLeft()) + "]\n";
 
 			unsigned int iState = (rand() % 10 + 1);
 
@@ -55,7 +55,7 @@ void PauseState::ExecuteState(Video* videoRef)
 				videoRef->GetVInfo()->SetState(new PlayState());
 			}
 
-			if (3 == iState)
+			if (8 == iState)
 			{
 				delete videoRef->GetVInfo()->GetState();
 				videoRef->GetVInfo()->SetState(new StopState());
@@ -100,6 +100,16 @@ void VideoInfo::SetState(IVideoState* videoState)
 	m_videoState = videoState;
 }
 
+void VideoInfo::ResetElapsedDuration()
+{
+	m_elapsedDuration = 0;
+}
+
+void VideoInfo::ResetDurationLeft()
+{
+	m_durationLeft = m_duration;
+}
+
 void VideoInfo::ElapsedDuration()
 {
 	++m_elapsedDuration;
@@ -129,6 +139,11 @@ IVideoState* VideoInfo::GetState()
 	return m_videoState;
 }
 
+string VideoInfo::GetCompletePath()
+{
+	return m_completePath;
+}
+
 Video::Video(VideoInfo* videoInfo):m_videoInfo(videoInfo)
 {
 	cout << "\nVideo : " << m_videoInfo->GetInfo();
@@ -155,13 +170,11 @@ void Video::Run()
 		if (dynamic_cast<StopState*>(m_videoInfo->GetState()) != NULL)
 		{
 			m_videoInfo->GetState()->ExecuteState(this);
+			m_videoInfo->ResetElapsedDuration();
+			m_videoInfo->ResetDurationLeft();
 			break;
 		}
 	}
-}
-
-void Video::Control()
-{
 }
 
 void Video::Play()
@@ -174,10 +187,6 @@ void Video::Play()
 	m_videoInfo->SetState(new BeginState());
 
 	thread Run(&Video::Run,this);
-	thread Control(&Video::Control, this);
 
-	while (1)
-	{
-
-	}
+	Run.join();
 }
