@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+class Video;
+
 class IVideoState
 {
 public:
@@ -67,7 +69,8 @@ public:
 	void SetCompletePath(std::string path);
 	void SetState(IVideoState* videoState);
 
-	inline std::string GetInfo() { return std::string("[Id: " + m_id + " Name: " + m_name + " FullPath: " + m_completePath + " Resolution: " + m_resolution + " HD: " + std::to_string(m_isHD) + " Duration: " +std::to_string(m_duration)); }
+	inline std::string GetInfo() { return std::string("\n[\n\tId: " + m_id + " \n\tName: " + m_name + " \n\tFullPath: " + m_completePath + \
+		" \n\tResolution: " + m_resolution + " \n\tHD: " + std::to_string(m_isHD) + "\n\tDuration: " +std::to_string(m_duration))+"\n]\n\n\n"; }
 };
 
 
@@ -79,9 +82,6 @@ private:
 private:
 	void Run();
 	void Control();
-	std::string VideoRunner(VideoState state);
-	VideoState State();
-
 
 public:
 	Video(VideoInfo* videoInfo);
